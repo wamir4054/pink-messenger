@@ -2,7 +2,7 @@ FROM node:22-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm install --omit=dev
 COPY . .
 RUN mkdir -p uploads/avatars uploads/files && chown -R node:node /app
 USER node

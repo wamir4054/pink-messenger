@@ -24,7 +24,13 @@ async function makeIdentity(password){const kp=await crypto.subtle.generateKey({
 async function importIdentity(publicKeyJwk,box,password){const privateJwk=await unlockPrivateJwk(box,password);const publicKey=await crypto.subtle.importKey('jwk',publicKeyJwk,{name:'RSA-OAEP',hash:'SHA-256'},true,['encrypt']);const privateKey=await crypto.subtle.importKey('jwk',privateJwk,{name:'RSA-OAEP',hash:'SHA-256'},false,['decrypt']);return {publicKey,privateKey,publicJwk:publicKeyJwk};}
 async function loadIdentity(password,serverCrypto){if(!serverCrypto?.publicKey||!serverCrypto?.privateKeyBox)throw new Error('Для этого аккаунта ещё не создан ключ шифрования. Выйдите и зарегистрируйтесь/войдите заново в обновлённую версию.');return importIdentity(serverCrypto.publicKey,serverCrypto.privateKeyBox,password);}
 async function exportPublicJwk(key){return crypto.subtle.exportKey('jwk',key)}
-async function importPublicJwk(jwk){return crypto.subtle.importKey('jwk',jwk,{name:'RSA-OAEP',hash:'SHA-256'},true,['encrypt']);}
+async function importPublicJwk(jwk){
+  if(typeof jwk==='string'){
+    try{jwk=JSON.parse(jwk)}catch{throw new Error('Некорректный открытый ключ')}
+  }
+  if(!jwk || typeof jwk!=='object') throw new Error('Некорректный открытый ключ');
+  return crypto.subtle.importKey('jwk',jwk,{name:'RSA-OAEP',hash:'SHA-256'},true,['encrypt']);
+}
 async function wrapAesKey(aesKey,publicKey){const raw=await crypto.subtle.exportKey('raw',aesKey);return b64u(await crypto.subtle.encrypt({name:'RSA-OAEP'},publicKey,raw));}
 async function unwrapAesKey(box,privateKey){const raw=await crypto.subtle.decrypt({name:'RSA-OAEP'},privateKey,unb64u(box));return crypto.subtle.importKey('raw',raw,{name:'AES-GCM'},false,['encrypt','decrypt']);}
 async function encryptText(text,key){const iv=crypto.getRandomValues(new Uint8Array(12));const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,utf8.encode(text));return {ciphertext:b64u(ct),iv:b64u(iv)};}

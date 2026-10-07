@@ -55,7 +55,11 @@ async function initializeConversationKey(c){
 }
 
 function showAuth(register=false){state.register=register;$('#auth').classList.remove('hidden');$('#app').classList.add('hidden');$('#authTitle').textContent=register?'Регистрация':'Вход';$('#authSubtitle').textContent=register?'Создайте аккаунт и найдите друзей':'Войдите, чтобы продолжить общение';$('#authButton').textContent=register?'Создать аккаунт':'Войти';$('#password').autocomplete=register?'new-password':'current-password';$('#switchAuth').innerHTML=register?'Уже есть аккаунт? <button type="button">Войти</button>':'Нет аккаунта? <button type="button">Подать заявку</button>';$('#authError').textContent='';$('#username').focus();}
-async function start(){if(!state.token)return showAuth();try{const d=await api('/me');state.user=d.user;const c=await api('/me/crypto');state.serverCrypto=c;await enterApp();}catch{localStorage.removeItem('pink_token');state.token=null;showAuth();}}
+async function start(){
+  localStorage.removeItem('pink_token');
+  state.token=null;
+  showAuth();
+}
 function setMe(u){state.user=u;$('#meName').textContent=u.username;$('#meStatus').textContent='в сети';$('#meAvatar').innerHTML=avatarHtml(u,u.username);}
 async function enterApp(){ $('#auth').classList.add('hidden');$('#app').classList.remove('hidden');setMe(state.user);await loadChats();connectSocket(); }
 async function loadChats(){const d=await api('/conversations');state.conversations=d.conversations;renderChats();}

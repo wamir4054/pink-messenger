@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Pink Messenger — личные и групповые чаты в реальном времени">
+  <title>Pink Messenger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="auth" class="auth-shell">
+    <div class="auth-card">
+      <div class="brand-mark">P</div>
+      <h1 id="authTitle">Вход</h1>
+      <p class="auth-subtitle" id="authSubtitle">Войдите, чтобы продолжить общение</p><p class="e2ee-note">🔒 Сквозное шифрование: сервер не видит текст сообщений и содержимое файлов.</p>
+      <form id="authForm">
+        <label>Имя пользователя<input id="username" autocomplete="username" minlength="3" maxlength="24" required /></label>
+        <label>Пароль<input id="password" type="password" autocomplete="current-password" minlength="8" required /></label>
+        <button class="primary" type="submit" id="authButton">Войти</button>
+      </form>
+      <p class="switch-auth" id="switchAuth">Нет аккаунта? <button type="button">Подать заявку</button></p>
+      <div id="authError" class="error"></div>
+    </div>
+  </div>
+
+  <div id="app" class="app-shell hidden">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <div class="logo">P</div>
+        <div><strong>Pink</strong><span>Messenger</span></div>
+        <button class="icon-btn" id="logout" title="Выйти">↪</button>
+      </div>
+      <div class="me-card">
+        <button class="avatar avatar-button" id="meAvatar" title="Изменить аватар"></button>
+        <input id="avatarInput" class="hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+        <div class="me-copy"><b id="meName"></b><small id="meStatus">в сети</small></div>
+      </div>
+      <div class="search-wrap"><span>⌕</span><input id="userSearch" placeholder="Найти пользователя" autocomplete="off" /></div>
+      <div id="searchResults" class="search-results hidden"></div>
+      <div class="chat-head"><span>Мои чаты</span><button id="newGroup" class="pink-plus" title="Создать группу">+</button></div>
+      <div id="chatList" class="chat-list"></div>
+    </aside>
+
+    <main class="chat-area">
+      <div id="emptyState" class="empty-state"><div class="empty-icon">✦</div><h2>Выберите чат</h2><p>Найдите друга или создайте группу.</p></div>
+      <section id="chatView" class="chat-view hidden">
+        <header class="chat-header">
+          <button id="backToChats" class="back-btn">‹</button>
+          <div class="avatar" id="chatAvatar"></div>
+          <div class="chat-head-copy"><h2 id="chatTitle"></h2><span id="chatMeta"></span></div>
+        </header>
+        <div id="messages" class="messages"></div>
+        <form id="messageForm" class="composer">
+          <input id="messageInput" maxlength="4000" autocomplete="off" placeholder="Напишите сообщение..." />
+          <input id="fileInput" class="hidden" type="file">
+          <button type="button" id="attachBtn" class="attach-btn" title="Прикрепить файл">＋</button>
+          <button type="submit" title="Отправить">➤</button>
+        </form>
+        <div id="uploadHint" class="upload-hint"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="groupModal" class="modal hidden">
+    <div class="modal-card">
+      <button class="close" id="closeModal">×</button>
+      <h2>Новая группа</h2>
+      <label>Название<input id="groupName" maxlength="60" placeholder="Например, Наша компания" /></label>
+      <p class="field-title">Участники</p>
+      <div id="groupUsers" class="member-picker"></div>
+      <button id="createGroup" class="primary">Создать группу</button>
+      <div id="groupError" class="error"></div>
+    </div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

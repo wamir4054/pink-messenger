@@ -216,7 +216,7 @@ app.get('/api/users/:id/crypto', auth, async (req, res) => {
   const id = Number(req.params.id);
   const { rows } = await pool.query('SELECT id,username,public_key FROM users WHERE id=$1', [id]);
   if (!rows[0]) return res.status(404).json({ error: 'Пользователь не найден' });
-  res.json({ id:Number(rows[0].id), username:rows[0].username, publicKey:rows[0].public_key });
+  res.json({ id:Number(rows[0].id), username:rows[0].username, publicKey:rows[0].public_key ? JSON.parse(rows[0].public_key) : null });
 });
 
 app.get('/api/conversations/:id/keys', auth, async (req, res) => {
